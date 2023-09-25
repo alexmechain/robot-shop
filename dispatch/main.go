@@ -9,10 +9,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/instana/go-sensor"
-	ot "github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
-	otlog "github.com/opentracing/opentracing-go/log"
 	"github.com/streadway/amqp"
 )
 
@@ -103,7 +99,7 @@ func getOrderId(order []byte) string {
 	return id
 }
 
-func createSpan(headers map[string]interface{}, order string) {
+/*func createSpan(headers map[string]interface{}, order string) {
 	// headers is map[string]interface{}
 	// carrier is map[string]string
 	carrier := make(ot.TextMapCarrier)
@@ -162,18 +158,18 @@ func processSale(parentSpan ot.Span) {
 	span.SetTag(string(ext.SpanKind), "intermediate")
 	span.LogFields(otlog.String("info", "Order sent for processing"))
 	time.Sleep(time.Duration(42+rand.Int63n(42)) * time.Millisecond)
-}
+}*/
 
 func main() {
 	rand.Seed(time.Now().Unix())
 
 	// Instana tracing
-	ot.InitGlobalTracer(instana.NewTracerWithOptions(&instana.Options{
+	/*ot.InitGlobalTracer(instana.NewTracerWithOptions(&instana.Options{
 		Service:           Service,
 		LogLevel:          instana.Info,
 		EnableAutoProfile: true,
 	}))
-
+	*/
 	// Init amqpUri
 	// get host from environment
 	amqpHost, ok := os.LookupEnv("AMQP_HOST")
@@ -223,7 +219,7 @@ func main() {
 				log.Printf("Order %s\n", d.Body)
 				log.Printf("Headers %v\n", d.Headers)
 				id := getOrderId(d.Body)
-				go createSpan(d.Headers, id)
+				//go createSpan(d.Headers, id)
 			}
 		}
 	}()
